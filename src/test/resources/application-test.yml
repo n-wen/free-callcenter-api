@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/callcenter
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      idle-timeout: 300000
+      connection-timeout: 20000
+
+  config:
+    import: optional:file:./.env.yaml
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: io.github.nwen.freecallcenterapi.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root: WARN
+    io.github.nwen.freecallcenterapi: DEBUG
+    com.baomidou.mybatisplus: DEBUG

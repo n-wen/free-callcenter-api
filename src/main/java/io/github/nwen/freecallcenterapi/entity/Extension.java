@@ -22,7 +22,6 @@ public class Extension {
 
     private String password;
 
-    @TableField(select = false)
     private String displayName;
 
     private String status;
