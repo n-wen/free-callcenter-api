@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  freeswitch:
+    image: registry.cn-beijing.aliyuncs.com/wenning/freeswitch:1.10.12
+    container_name: freeswitch
+    network_mode: host
+    volumes:
+      - ./conf:/etc/freeswitch
+    restart: unless-stopped
