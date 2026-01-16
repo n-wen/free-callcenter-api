@@ -84,11 +84,10 @@ public class ExtensionService {
                 .build();
     }
 
-    public boolean dial(Long id, DialRequest request) {
-        Extension extension = extensionRepository.selectById(id);
-        if (extension == null) {
-            throw new IllegalArgumentException("分机不存在: " + id);
-        }
+    public boolean dial(DialRequest request) {
+        String source = request.getSource();
+        Extension extension = extensionRepository.findByExtensionNumber(source)
+                .orElseThrow(() -> new IllegalArgumentException("分机不存在: " + source));
 
         if (!"ONLINE".equals(extension.getStatus())) {
             throw new IllegalStateException("分机 " + extension.getExtensionNumber() + " 当前离线，无法呼出");

@@ -67,13 +67,10 @@ public class ExtensionController {
         }
     }
 
-    @PostMapping("/{id}/dial")
-    public Result<Void> dial(
-            @PathVariable Long id,
-            @Valid @RequestBody DialRequest request
-    ) {
+    @PostMapping("/dial")
+    public Result<Void> dial(@Valid @RequestBody DialRequest request) {
         try {
-            extensionService.dial(id, request);
+            extensionService.dial(request);
             return Result.success();
         } catch (IllegalArgumentException e) {
             return Result.error(404, e.getMessage());
