@@ -1,10 +1,5 @@
-package io.github.nwen.freecallcenterapi.entity;
+package io.github.nwen.freecallcenterapi.dto;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,12 +11,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("call_record")
-public class CallRecord {
+public class CallRecordResponse {
 
-    @TableId(type = IdType.AUTO)
     private Long id;
-
     private String callId;
     private String callerNumber;
     private String calleeNumber;
@@ -33,10 +25,5 @@ public class CallRecord {
     private Integer durationSeconds;
     private Long extensionId;
     private String recordingUrl;
-
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updatedAt;
 }

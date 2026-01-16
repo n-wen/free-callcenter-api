@@ -32,6 +32,7 @@ services:
       - "8021:8021/tcp"
     volumes:
       - ./fsconf:/etc/freeswitch
+      - ./cdr-csv:/var/log/freeswitch/cdr-csv
     networks:
       - voip-network
     depends_on:

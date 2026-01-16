@@ -67,3 +67,4 @@ Thumbs.db
 
 # Application
 *.log
+/deploy/cdr-csv/

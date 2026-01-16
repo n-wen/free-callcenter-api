@@ -1,6 +1,6 @@
 # 003-FreeSWITCH-ESL连接配置 Develop Task
 
-**状态**: Draft
+**状态**: Completed
 
 ---
 
@@ -16,37 +16,37 @@
 
 ## 子任务
 
-- [ ] 配置 ESL 连接参数
+- [x] 配置 ESL 连接参数
   - FreeSWITCH 服务器地址和端口
   - WebSocket 连接路径
   - 认证用户名和密码
 
-- [ ] 实现 ESL 连接管理
+- [x] 实现 ESL 连接管理
   - 创建 ESL 连接工厂
   - 实现连接池管理
   - 实现断线重连机制
 
-- [ ] 实现消息收发机制
+- [x] 实现消息收发机制
   - 发送命令 API (originate, bridge, hangup 等)
   - 接收事件监听器 (CHANNEL_CREATE, CHANNEL_ANSWER 等)
   - 消息解析和路由
 
-- [ ] 实现连接状态监控
+- [x] 实现连接状态监控
   - 连接状态监听
   - 心跳保活机制
   - 连接异常告警
 
-- [ ] 编写 ESL 连接测试用例
+- [x] 编写 ESL 连接测试用例
   测试: mvn test -Dtest=EslConnectionTest
 
 ---
 
 ## 任务目标
 
-- [ ] 成功连接 FreeSWITCH ESL 服务器
-- [ ] 能发送命令并收到响应
-- [ ] 能接收并处理通话事件
-- [ ] 断线后能自动重连
+- [x] 成功连接 FreeSWITCH ESL 服务器
+- [x] 能发送命令并收到响应
+- [x] 能接收并处理通话事件
+- [x] 断线后能自动重连
 
 ---
 
@@ -54,3 +54,4 @@
 
 | Date | Version | Description | Author |
 |------|---------|-------------|--------|
+| 2026-01-16 | 1.0 | 完成 ESL 连接配置，实现分机互打功能 | wenning |
