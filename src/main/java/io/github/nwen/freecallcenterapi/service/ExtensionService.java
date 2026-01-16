@@ -103,12 +103,11 @@ public class ExtensionService {
                 : extension.getDisplayName();
 
         String command = String.format(
-                "originate {origination_caller_id_number=%s,origination_caller_id_name=%s}%s@%s %s",
+                "originate {origination_caller_id_number=%s,origination_caller_id_name=%s}user/%s %s",
                 callerIdNumber,
                 callerIdName,
-                extension.getExtensionNumber(),
-                extension.getContext(),
-                destination
+                destination,
+                extension.getExtensionNumber()
         );
 
         try {

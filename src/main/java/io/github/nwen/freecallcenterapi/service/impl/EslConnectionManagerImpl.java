@@ -35,18 +35,24 @@ public class EslConnectionManagerImpl implements EslService {
         return eslClient != null;
     }
 
+    public Client getClient() {
+        return eslClient;
+    }
+
     @Override
     public void connect() {
         if (eslClient != null) {
             return;
         }
         try {
-            log.info("Connecting to FreeSWITCH ESL: {}:{}", eslConfig.getHost(), eslConfig.getPort());
+            log.info("Connecting to FreeSWITCH ESL: {}:{} with password: [{}]", 
+                    eslConfig.getHost(), eslConfig.getPort(), 
+                    eslConfig.getPassword() != null ? eslConfig.getPassword().substring(0, Math.min(3, eslConfig.getPassword().length())) + "..." : "null");
             eslClient = new Client();
             eslClient.connect(eslConfig.getHost(), eslConfig.getPort(), eslConfig.getPassword(), 5000);
             log.info("Connected to FreeSWITCH ESL successfully");
         } catch (Exception e) {
-            log.warn("Failed to connect to FreeSWITCH ESL: {}", e.getMessage());
+            log.warn("Failed to connect to FreeSWITCH ESL: {} - {}", e.getClass().getSimpleName(), e.getMessage());
             eslClient = null;
         }
     }

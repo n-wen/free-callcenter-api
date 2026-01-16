@@ -51,8 +51,9 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/free_callcenter
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=123456
-      - ESL_HOST=freeswitch
-      - ESL_PORT=8021
+      - FREESWITCH_ESL_HOST=freeswitch
+      - FREESWITCH_ESL_PORT=8021
+      - FREESWITCH_ESL_PASSWORD=ClueCon
     networks:
       - voip-network
     depends_on:
@@ -70,3 +71,4 @@ networks:
 
 volumes:
   postgres_data:
+  maven_cache:

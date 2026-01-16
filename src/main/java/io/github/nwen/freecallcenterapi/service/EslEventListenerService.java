@@ -1,6 +1,6 @@
 package io.github.nwen.freecallcenterapi.service;
 
-import io.github.nwen.freecallcenterapi.config.EslConfig;
+import io.github.nwen.freecallcenterapi.service.impl.EslConnectionManagerImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.freeswitch.esl.client.IEslEventListener;
 import org.freeswitch.esl.client.inbound.Client;
@@ -15,12 +15,12 @@ import jakarta.annotation.PreDestroy;
 @Service
 public class EslEventListenerService {
 
-    private final EslConfig eslConfig;
+    private final EslService eslService;
     private final ExtensionService extensionService;
     private Client eslClient;
 
-    public EslEventListenerService(EslConfig eslConfig, ExtensionService extensionService) {
-        this.eslConfig = eslConfig;
+    public EslEventListenerService(EslService eslService, ExtensionService extensionService) {
+        this.eslService = eslService;
         this.extensionService = extensionService;
     }
 
@@ -28,8 +28,14 @@ public class EslEventListenerService {
     public void init() {
         Thread.startVirtualThread(() -> {
             try {
-                Thread.sleep(5000);
-                startListening();
+                for (int i = 0; i < 30; i++) {
+                    if (eslService.isConnected()) {
+                        startListening();
+                        return;
+                    }
+                    Thread.sleep(1000);
+                }
+                log.warn("ESL not connected after 30 seconds, event listening not started");
             } catch (Exception e) {
                 log.warn("Failed to start ESL event listening: {}", e.getMessage());
             }
@@ -38,11 +44,14 @@ public class EslEventListenerService {
 
     public void startListening() {
         try {
-            eslClient = new Client();
-            eslClient.connect(eslConfig.getHost(), eslConfig.getPort(), eslConfig.getPassword(), 5000);
-            eslClient.addEventListener(new ExtensionEventListener());
-            eslClient.setEventSubscriptions("plain", "all");
-            log.info("ESL event listening started");
+            if (eslService.isConnected()) {
+                eslClient = ((EslConnectionManagerImpl) eslService).getClient();
+                eslClient.addEventListener(new ExtensionEventListener());
+                eslClient.setEventSubscriptions("plain", "all");
+                log.info("ESL event listening started");
+            } else {
+                log.warn("ESL not connected, cannot start event listening");
+            }
         } catch (Exception e) {
             log.warn("Failed to start ESL event listening: {}", e.getMessage());
             if (eslClient != null) {
@@ -88,8 +97,5 @@ public class EslEventListenerService {
 
     @PreDestroy
     public void destroy() {
-        if (eslClient != null) {
-            eslClient = null;
-        }
     }
 }

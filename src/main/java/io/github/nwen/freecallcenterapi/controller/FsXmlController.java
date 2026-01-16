@@ -46,6 +46,10 @@ public class FsXmlController {
         }
 
         Extension extension = extensionOpt.get();
+        if (!"ONLINE".equals(extension.getStatus())) {
+            log.warn("Extension {} is offline, not returning dialstring", user);
+            return buildNotFoundResponse(effectiveDomain, user);
+        }
         log.info("Found extension: {} for domain {}", extension.getExtensionNumber(), effectiveDomain);
         return buildDirectoryXml(effectiveDomain, extension);
     }
