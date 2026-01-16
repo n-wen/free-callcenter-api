@@ -26,12 +26,17 @@ public class FsXmlController {
             produces = MediaType.APPLICATION_XML_VALUE
     )
     public String directory(
-            @RequestParam("user") String user,
+            @RequestParam(value = "user", required = false) String user,
             @RequestParam(value = "domain", required = false) String domain,
             @RequestParam(value = "action", required = false, defaultValue = "") String action
     ) {
         String effectiveDomain = (domain != null && !domain.isEmpty()) ? domain : "default";
         log.info("FreeSWITCH directory request: user={}, domain={}, action={}", user, effectiveDomain, action);
+
+        if (user == null || user.isEmpty()) {
+            log.debug("No user specified, returning domain-level config");
+            return buildDomainXml(effectiveDomain);
+        }
 
         Optional<Extension> extensionOpt = extensionRepository.findByExtensionNumber(user);
 
@@ -68,6 +73,27 @@ public class FsXmlController {
         xml.append("                <variable name=\"domain_name\" value=\"").append(domain).append("\"/>\n");
         xml.append("              </variables>\n");
         xml.append("            </user>\n");
+        xml.append("          </users>\n");
+        xml.append("        </group>\n");
+        xml.append("      </groups>\n");
+        xml.append("    </domain>\n");
+        xml.append("  </section>\n");
+        xml.append("</document>\n");
+        return xml.toString();
+    }
+
+    private String buildDomainXml(String domain) {
+        StringBuilder xml = new StringBuilder();
+        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        xml.append("<document type=\"freeswitch/xml\">\n");
+        xml.append("  <section name=\"directory\">\n");
+        xml.append("    <domain name=\"").append(domain).append("\">\n");
+        xml.append("      <params>\n");
+        xml.append("        <param name=\"dial-string\" value=\"{presence_id=${dialed_user}@${dialed_domain}}${sofia_contact(${dialed_user}@${dialed_domain})}\"/>\n");
+        xml.append("      </params>\n");
+        xml.append("      <groups>\n");
+        xml.append("        <group name=\"default\">\n");
+        xml.append("          <users>\n");
         xml.append("          </users>\n");
         xml.append("        </group>\n");
         xml.append("      </groups>\n");

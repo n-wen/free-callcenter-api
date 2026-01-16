@@ -27,7 +27,7 @@ mybatis-plus:
 
 freeswitch:
   esl:
-    host: 172.20.10.9
+    host: 172.16.80.176
     port: 8021
     password: ${FS_PASSWORD:ClueCon}
     timeout: 5000

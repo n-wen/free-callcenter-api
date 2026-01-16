@@ -1,0 +1,8 @@
+.git
+.gitignore
+target/test-results
+target/surefire-reports
+*.log
+.env
+.idea
+*.iml
