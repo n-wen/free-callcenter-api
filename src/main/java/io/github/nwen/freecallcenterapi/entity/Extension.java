@@ -24,7 +24,7 @@ public class Extension {
 
     private String displayName;
 
-    private String status;
+    private Boolean enabled;
 
     private String context;
 

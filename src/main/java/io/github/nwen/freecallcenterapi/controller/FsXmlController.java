@@ -37,7 +37,7 @@ public class FsXmlController {
             log.debug("No user specified, returning domain-level config");
             return buildDomainXml(effectiveDomain);
         }
-
+        // 目前分机没有存储domain，所以这里直接使用effectiveDomain即可
         Optional<Extension> extensionOpt = extensionRepository.findByExtensionNumber(user);
 
         if (extensionOpt.isEmpty()) {
@@ -46,8 +46,8 @@ public class FsXmlController {
         }
 
         Extension extension = extensionOpt.get();
-        if (!"ONLINE".equals(extension.getStatus())) {
-            log.warn("Extension {} is offline, not returning dialstring", user);
+        if (!Boolean.TRUE.equals(extension.getEnabled())) {
+            log.warn("Extension {} is disabled, not returning dialstring", user);
             return buildNotFoundResponse(effectiveDomain, user);
         }
         log.info("Found extension: {} for domain {}", extension.getExtensionNumber(), effectiveDomain);

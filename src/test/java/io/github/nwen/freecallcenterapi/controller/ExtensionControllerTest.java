@@ -55,7 +55,7 @@ class ExtensionControllerTest {
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(jsonPath("$.data.extensionNumber").value("1001"))
                 .andExpect(jsonPath("$.data.displayName").value("Test Extension"))
-                .andExpect(jsonPath("$.data.status").value("OFFLINE"))
+                .andExpect(jsonPath("$.data.enabled").value(false))
                 .andReturn();
 
         String responseBody = result.getResponse().getContentAsString();
@@ -120,7 +120,7 @@ class ExtensionControllerTest {
                 .extensionNumber("1001")
                 .password("password123")
                 .displayName("Existing Extension")
-                .status("OFFLINE")
+                .enabled(false)
                 .context("default")
                 .build();
         extensionRepository.insert(existing);
@@ -147,7 +147,7 @@ class ExtensionControllerTest {
                     .extensionNumber("200" + i)
                     .password("password" + i)
                     .displayName("Extension " + i)
-                    .status(i % 2 == 0 ? "ONLINE" : "OFFLINE")
+                    .enabled(i % 2 == 0)
                     .context("default")
                     .build();
             extensionRepository.insert(extension);
@@ -175,7 +175,7 @@ class ExtensionControllerTest {
                 .extensionNumber("1001")
                 .password("password123")
                 .displayName("Test Extension")
-                .status("ONLINE")
+                .enabled(true)
                 .context("default")
                 .build();
         extensionRepository.insert(extension);
@@ -201,7 +201,7 @@ class ExtensionControllerTest {
                 .extensionNumber("1001")
                 .password("oldPassword")
                 .displayName("Old Name")
-                .status("OFFLINE")
+                .enabled(false)
                 .context("default")
                 .build();
         extensionRepository.insert(extension);
@@ -248,7 +248,7 @@ class ExtensionControllerTest {
                 .extensionNumber("1001")
                 .password("password123")
                 .displayName("To Be Deleted")
-                .status("OFFLINE")
+                .enabled(false)
                 .context("default")
                 .build();
         extensionRepository.insert(extension);
@@ -269,37 +269,12 @@ class ExtensionControllerTest {
     }
 
     @Test
-    void getStatus_Success() throws Exception {
+    void dial_Disabled() throws Exception {
         Extension extension = Extension.builder()
                 .extensionNumber("1001")
                 .password("password123")
                 .displayName("Test Extension")
-                .status("ONLINE")
-                .context("default")
-                .build();
-        extensionRepository.insert(extension);
-
-        mockMvc.perform(get("/extensions/" + extension.getId() + "/status"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
-                .andExpect(jsonPath("$.data.status").value("ONLINE"))
-                .andExpect(jsonPath("$.data.extensionNumber").value("1001"));
-    }
-
-    @Test
-    void getStatus_NotFound() throws Exception {
-        mockMvc.perform(get("/extensions/99999/status"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(404));
-    }
-
-    @Test
-    void dial_Offline() throws Exception {
-        Extension extension = Extension.builder()
-                .extensionNumber("1001")
-                .password("password123")
-                .displayName("Test Extension")
-                .status("OFFLINE")
+                .enabled(false)
                 .context("default")
                 .build();
         extensionRepository.insert(extension);

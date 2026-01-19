@@ -4,7 +4,6 @@ import io.github.nwen.freecallcenterapi.common.Result;
 import io.github.nwen.freecallcenterapi.dto.DialRequest;
 import io.github.nwen.freecallcenterapi.dto.ExtensionRequest;
 import io.github.nwen.freecallcenterapi.dto.ExtensionResponse;
-import io.github.nwen.freecallcenterapi.dto.ExtensionStatusResponse;
 import io.github.nwen.freecallcenterapi.service.ExtensionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -58,13 +57,20 @@ public class ExtensionController {
         return Result.error(404, "分机不存在");
     }
 
-    @GetMapping("/{id}/status")
-    public Result<ExtensionStatusResponse> getStatus(@PathVariable Long id) {
-        try {
-            return Result.success(extensionService.getStatus(id));
-        } catch (IllegalArgumentException e) {
-            return Result.error(404, e.getMessage());
+    @PutMapping("/{id}/enable")
+    public Result<Void> enable(@PathVariable Long id) {
+        if (extensionService.setEnabled(id, true)) {
+            return Result.success();
         }
+        return Result.error(404, "分机不存在");
+    }
+
+    @PutMapping("/{id}/disable")
+    public Result<Void> disable(@PathVariable Long id) {
+        if (extensionService.setEnabled(id, false)) {
+            return Result.success();
+        }
+        return Result.error(404, "分机不存在");
     }
 
     @PostMapping("/dial")

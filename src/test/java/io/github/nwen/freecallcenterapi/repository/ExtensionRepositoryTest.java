@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -31,7 +32,7 @@ class ExtensionRepositoryTest {
                 .extensionNumber("1001")
                 .password("password123")
                 .displayName("Test Extension")
-                .status("OFFLINE")
+                .enabled(false)
                 .context("default")
                 .build();
 
@@ -49,7 +50,7 @@ class ExtensionRepositoryTest {
                 .extensionNumber("1002")
                 .password("password456")
                 .displayName("Another Extension")
-                .status("ONLINE")
+                .enabled(true)
                 .context("default")
                 .build();
 
@@ -62,7 +63,7 @@ class ExtensionRepositoryTest {
 
         assertNotNull(found);
         assertEquals("1002", found.getExtensionNumber());
-        assertEquals("ONLINE", found.getStatus());
+        assertTrue(found.getEnabled());
     }
 
     @Test
@@ -71,7 +72,7 @@ class ExtensionRepositoryTest {
                 .extensionNumber("1003")
                 .password("oldPassword")
                 .displayName("Old Name")
-                .status("OFFLINE")
+                .enabled(false)
                 .context("default")
                 .build();
 
@@ -79,14 +80,14 @@ class ExtensionRepositoryTest {
 
         extension.setPassword("newPassword");
         extension.setDisplayName("New Name");
-        extension.setStatus("ONLINE");
+        extension.setEnabled(true);
         extensionRepository.updateById(extension);
 
         Extension updated = extensionRepository.selectById(extension.getId());
         assertNotNull(updated);
         assertEquals("newPassword", updated.getPassword());
         assertEquals("New Name", updated.getDisplayName());
-        assertEquals("ONLINE", updated.getStatus());
+        assertTrue(updated.getEnabled());
     }
 
     @Test
@@ -95,7 +96,7 @@ class ExtensionRepositoryTest {
                 .extensionNumber("1004")
                 .password("password789")
                 .displayName("To Be Deleted")
-                .status("OFFLINE")
+                .enabled(false)
                 .context("default")
                 .build();
 
@@ -115,7 +116,7 @@ class ExtensionRepositoryTest {
                     .extensionNumber("200" + i)
                     .password("password" + i)
                     .displayName("Extension " + i)
-                    .status(i % 2 == 0 ? "ONLINE" : "OFFLINE")
+                    .enabled(i % 2 == 0)
                     .context("default")
                     .build();
             extensionRepository.insert(extension);
@@ -126,32 +127,32 @@ class ExtensionRepositoryTest {
     }
 
     @Test
-    void testFindByStatus() {
-        Extension onlineExt = Extension.builder()
+    void testFindByEnabled() {
+        Extension enabledExt = Extension.builder()
                 .extensionNumber("3001")
                 .password("pass1")
-                .displayName("Online Ext")
-                .status("ONLINE")
+                .displayName("Enabled Ext")
+                .enabled(true)
                 .context("default")
                 .build();
-        extensionRepository.insert(onlineExt);
+        extensionRepository.insert(enabledExt);
 
-        Extension offlineExt = Extension.builder()
+        Extension disabledExt = Extension.builder()
                 .extensionNumber("3002")
                 .password("pass2")
-                .displayName("Offline Ext")
-                .status("OFFLINE")
+                .displayName("Disabled Ext")
+                .enabled(false)
                 .context("default")
                 .build();
-        extensionRepository.insert(offlineExt);
+        extensionRepository.insert(disabledExt);
 
-        List<Extension> onlineExtensions = extensionRepository.selectList(
+        List<Extension> enabledExtensions = extensionRepository.selectList(
                 new LambdaQueryWrapper<Extension>()
-                        .eq(Extension::getStatus, "ONLINE")
+                        .eq(Extension::getEnabled, true)
         );
 
-        assertEquals(1, onlineExtensions.size());
-        assertEquals("3001", onlineExtensions.get(0).getExtensionNumber());
+        assertEquals(1, enabledExtensions.size());
+        assertEquals("3001", enabledExtensions.get(0).getExtensionNumber());
     }
 
     @Test
@@ -160,7 +161,7 @@ class ExtensionRepositoryTest {
                 .extensionNumber("4001")
                 .password("password1")
                 .displayName("First Extension")
-                .status("OFFLINE")
+                .enabled(false)
                 .context("default")
                 .build();
         extensionRepository.insert(ext1);
@@ -169,7 +170,7 @@ class ExtensionRepositoryTest {
                 .extensionNumber("4001")
                 .password("password2")
                 .displayName("Duplicate Extension")
-                .status("ONLINE")
+                .enabled(true)
                 .context("default")
                 .build();
 

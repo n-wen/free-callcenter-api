@@ -3,7 +3,6 @@ package io.github.nwen.freecallcenterapi.service;
 import io.github.nwen.freecallcenterapi.dto.DialRequest;
 import io.github.nwen.freecallcenterapi.dto.ExtensionRequest;
 import io.github.nwen.freecallcenterapi.dto.ExtensionResponse;
-import io.github.nwen.freecallcenterapi.dto.ExtensionStatusResponse;
 import io.github.nwen.freecallcenterapi.entity.Extension;
 import io.github.nwen.freecallcenterapi.repository.ExtensionRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,7 @@ public class ExtensionService {
                 .password(request.getPassword())
                 .displayName(request.getDisplayName())
                 .context(request.getContext())
-                .status("OFFLINE")
+                .enabled(true)
                 .build();
 
         extensionRepository.insert(extension);
@@ -69,19 +68,15 @@ public class ExtensionService {
         return true;
     }
 
-    public ExtensionStatusResponse getStatus(Long id) {
+    public boolean setEnabled(Long id, boolean enabled) {
         Extension extension = extensionRepository.selectById(id);
         if (extension == null) {
-            throw new IllegalArgumentException("分机不存在: " + id);
+            return false;
         }
-
-        return ExtensionStatusResponse.builder()
-                .id(extension.getId())
-                .extensionNumber(extension.getExtensionNumber())
-                .displayName(extension.getDisplayName())
-                .status(extension.getStatus())
-                .context(extension.getContext())
-                .build();
+        extension.setEnabled(enabled);
+        extensionRepository.updateById(extension);
+        log.info("分机 {} 状态: {}", extension.getExtensionNumber(), enabled ? "启用" : "禁用");
+        return true;
     }
 
     public boolean dial(DialRequest request) {
@@ -89,8 +84,8 @@ public class ExtensionService {
         Extension extension = extensionRepository.findByExtensionNumber(source)
                 .orElseThrow(() -> new IllegalArgumentException("分机不存在: " + source));
 
-        if (!"ONLINE".equals(extension.getStatus())) {
-            throw new IllegalStateException("分机 " + extension.getExtensionNumber() + " 当前离线，无法呼出");
+        if (!Boolean.TRUE.equals(extension.getEnabled())) {
+            throw new IllegalStateException("分机 " + extension.getExtensionNumber() + " 当前已被禁用，无法呼出");
         }
 
         String destination = request.getDestination();
@@ -119,20 +114,12 @@ public class ExtensionService {
         }
     }
 
-    public void updateExtensionStatus(String extensionNumber, String status) {
-        extensionRepository.findByExtensionNumber(extensionNumber).ifPresent(extension -> {
-            extension.setStatus(status);
-            extensionRepository.updateById(extension);
-            log.debug("更新分机状态: {} -> {}", extensionNumber, status);
-        });
-    }
-
     private ExtensionResponse toResponse(Extension extension) {
         return ExtensionResponse.builder()
                 .id(extension.getId())
                 .extensionNumber(extension.getExtensionNumber())
                 .displayName(extension.getDisplayName())
-                .status(extension.getStatus())
+                .enabled(extension.getEnabled())
                 .context(extension.getContext())
                 .createdAt(extension.getCreatedAt())
                 .updatedAt(extension.getUpdatedAt())

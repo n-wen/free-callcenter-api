@@ -21,15 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EslEventListenerService {
 
     private final EslService eslService;
-    private final ExtensionService extensionService;
     private final CallRecordService callRecordService;
     private Client eslClient;
 
     private final Map<String, CallRecord> pendingCalls = new ConcurrentHashMap<>();
 
-    public EslEventListenerService(EslService eslService, ExtensionService extensionService, CallRecordService callRecordService) {
+    public EslEventListenerService(EslService eslService, CallRecordService callRecordService) {
         this.eslService = eslService;
-        this.extensionService = extensionService;
         this.callRecordService = callRecordService;
     }
 
@@ -93,7 +91,6 @@ public class EslEventListenerService {
             String user = event.getEventHeaders().get("sip_auth_username");
             if (user != null) {
                 log.info("分机 {} 注册成功", user);
-                extensionService.updateExtensionStatus(user, "ONLINE");
             }
         }
 
@@ -101,7 +98,6 @@ public class EslEventListenerService {
             String user = event.getEventHeaders().get("sip_auth_username");
             if (user != null) {
                 log.info("分机 {} 注销", user);
-                extensionService.updateExtensionStatus(user, "OFFLINE");
             }
         }
 

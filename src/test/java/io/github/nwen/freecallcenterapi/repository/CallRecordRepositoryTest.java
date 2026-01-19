@@ -36,7 +36,7 @@ class CallRecordRepositoryTest {
                 .extensionNumber("1001")
                 .password("password")
                 .displayName("Test Agent")
-                .status("ONLINE")
+                .enabled(true)
                 .context("default")
                 .build();
         extensionRepository.insert(extension);
