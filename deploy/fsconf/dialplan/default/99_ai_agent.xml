@@ -1,0 +1,20 @@
+<include>
+  <!--
+      AI 智能体分机 - 验证版
+      拨打 9000 先播放提示音，验证音频下发通路正常
+  -->
+  <extension name="ai_agent">
+    <condition field="destination_number" expression="^9000$">
+      <action application="answer"/>
+      <action application="sleep" data="500"/>
+      <!-- 播放提示音验证用户能听到 FreeSWITCH 的音频 -->
+      <action application="playback" data="tone_stream://%(500,0,440)"/>
+      <action application="sleep" data="200"/>
+      <action application="playback" data="ivr/8000/ivr-welcome.wav"/>
+      <action application="sleep" data="500"/>
+      <action application="set" data="hangup_after_bridge=false"/>
+      <action application="set" data="continue_on_fail=true"/>
+      <action application="park"/>
+    </condition>
+  </extension>
+</include>

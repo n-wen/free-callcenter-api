@@ -47,7 +47,8 @@
     <!-- <load module="mod_khomp"/>   -->
     <load module="mod_rtc"/>
     <!-- <load module="mod_rtmp"/>   -->
-    <load module="mod_verto"/>
+    <!-- <load module="mod_verto"/> -->
+    <load module="mod_audio_stream"/>
 
     <!-- Applications -->
     <!-- <load module="mod_signalwire"/> -->
@@ -131,7 +132,7 @@
     <!-- <load module="mod_pocketsphinx"/> -->
     <!-- <load module="mod_cepstral"/> -->
     <!-- <load module="mod_tts_commandline"/> -->
-    <!-- <load module="mod_rss"/> -->
+    <!-- <load module="mod_rss" /> -->
 
     <!-- Say -->
     <load module="mod_say_en"/>

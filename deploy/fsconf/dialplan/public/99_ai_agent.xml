@@ -1,0 +1,15 @@
+<include>
+  <extension name="ai_agent">
+    <condition field="destination_number" expression="^9000$">
+      <action application="answer"/>
+      <action application="sleep" data="500"/>
+      <action application="playback" data="silence_stream://500"/>
+      <action application="set" data="hangup_after_bridge=false"/>
+      <action application="set" data="continue_on_fail=true"/>
+      <action application="record" data="/tmp/ai_input.wav 10 400"/>
+      <action application="system" data="wget -q -O /tmp/ai_output.wav --post-file=/tmp/ai_input.wav http://live_voice_call:9090/ai 2>/dev/null"/>
+      <action application="playback" data="/tmp/ai_output.wav"/>
+      <action application="transfer" data="9000"/>
+    </condition>
+  </extension>
+</include>

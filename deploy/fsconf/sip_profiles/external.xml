@@ -62,8 +62,9 @@
     -->
     <param name="rtp-ip" value="$${local_ip_v4}"/>
     <param name="sip-ip" value="$${local_ip_v4}"/>
-    <param name="ext-rtp-ip" value="$${external_rtp_ip}"/>
-    <param name="ext-sip-ip" value="$${external_sip_ip}"/>
+    <!-- ext-sip-ip / ext-rtp-ip 在局域网测试中无需设置，注释掉以避免 mod_sofia 加载失败 -->
+    <!-- <param name="ext-rtp-ip" value="$${external_rtp_ip}"/> -->
+    <!-- <param name="ext-sip-ip" value="$${external_sip_ip}"/> -->
     <param name="rtp-timeout-sec" value="300"/>
     <param name="rtp-hold-timeout-sec" value="1800"/>
     <!--<param name="enable-3pcc" value="true"/>-->

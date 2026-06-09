@@ -36,3 +36,10 @@ logging:
   level:
     root: INFO
     io.github.nwen.freecallcenterapi: DEBUG
+
+ai-agent:
+  ws-port: 8080
+  ws-path: /audio
+  processor: echoProcessor
+  timeout: 5000
+  freeswitch-extension: 9000

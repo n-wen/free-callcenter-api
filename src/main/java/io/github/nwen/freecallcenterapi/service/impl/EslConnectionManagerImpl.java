@@ -70,7 +70,18 @@ public class EslConnectionManagerImpl implements EslService {
             connect();
         }
         try {
-            EslMessage response = eslClient.sendSyncApiCommand(command, "");
+            // 分离命令名和参数: "cmd args" → sendSyncApiCommand("cmd", "args")
+            String cmdName;
+            String cmdArgs;
+            int firstSpace = command.indexOf(' ');
+            if (firstSpace > 0) {
+                cmdName = command.substring(0, firstSpace);
+                cmdArgs = command.substring(firstSpace + 1);
+            } else {
+                cmdName = command;
+                cmdArgs = "";
+            }
+            EslMessage response = eslClient.sendSyncApiCommand(cmdName, cmdArgs);
             if (response != null && response.getBodyLines() != null && !response.getBodyLines().isEmpty()) {
                 return String.join("\n", response.getBodyLines());
             }
